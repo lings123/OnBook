@@ -42,6 +42,8 @@ class CartController extends Controller
             'price' => $price, 
             'weight' => $price, 
             'options' => ['image' => $book->hinh_dai_dien, 'slug_name' => $book->slug_name]]);
+
+            Session::put('c',"true");
             return Redirect::back();
     }
     public function DelCart($rowId){

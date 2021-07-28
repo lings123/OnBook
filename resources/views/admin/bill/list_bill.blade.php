@@ -173,7 +173,7 @@ $(function(){
         var min = parseInt( $('#min').val());
         var max = parseInt( $('#max').val());
         var age = parseFloat( data[4]) || 0; // use data for the age column
- 
+
         if ( ( isNaN( min ) && isNaN( max ) ) ||
              ( isNaN( min ) && age <= max ) ||
              ( min <= age   && isNaN( max ) ) ||

@@ -41,11 +41,19 @@ class PageController extends Controller
     }
 
     public function getSalecode(){
-        $khuyenmai=DB::table('sale')->where('active',1)->get();
+        $user=Session::get('user');
+        if($user){
+            $khuyenmai=DB::table('sale')->where('active',1)->get();
         
-        Session::put('khuyenmai',$khuyenmai);
-
-        return  view('pages.sale_code');
+            Session::put('khuyenmai',$khuyenmai);
+    
+            return  view('pages.sale_code');
+        }
+        else{
+            Session::put('dangnhap',"Vui lòng đăng nhập!");
+            return redirect('/login');
+        }
+        
     }
     ////Blog/////
     public function getBlog(){
@@ -244,7 +252,7 @@ class PageController extends Controller
         return view('pages.category');
     }
 
-
+    ////Chi tiết sản phẩm///
     public function getDetail($slug_name){
         $book=DB::table('books')->where('slug_name',$slug_name)->first();
         Session::put('book',$book);
@@ -252,20 +260,20 @@ class PageController extends Controller
         Session::put('img_book',$img_book);
         $book_relate=DB::table('books')->where('idType',$book->idType)->get();
         Session::put('book_relate',$book_relate);
-        $comment=DB::table('danhgia')->select('*')->where('idBook',$book->idBook)->orderBy('create_date','DESC')->paginate(4);
+        $comment=DB::table('danhgia')->select('*')->where('idBook',$book->idBook)
+        ->where('status',1)->orderBy('create_date','DESC')->paginate(4);
         Session::put('comment',$comment);
         return view('pages.detail');
     }
+    ///Liên hệ///
     public function getContact(){
         return view('pages.contact');
     }
-    public function getType(){
-        return view('pages.type');
-    }
+    ///Trang đăng nhập///
     public function getLogin(){
         return view('pages.login');
     }
-
+    
     ///Đăng ký///
     public function postSignin(Request $request){
         $this->validate($request,[
@@ -295,27 +303,27 @@ class PageController extends Controller
         $data['name']=$request->txtName;
         $data['email']=$request->txtEmail;
         $data['password']=md5($request->txtPass);
-        $token = hash_hmac('sha256', $request->txtPass, config('app.key'));
+        $token = hash_hmac('sha256', str::random(40), config('app.key'));
         $data['token_remember']=$token;
         $mailData = [
             'title' => 'Cảm ơn '.$request->txtName.' đã đăng ký dịch vụ của OnBook. ',
             'content' => 'Chúng tôi gửi bạn mã khuyến mãi giảm 10% giá trị đơn hàng : NEW (được sử dụng 3 lần).
                             Mời bạn nhập mã xác nhận đã được cấp để kích hoạt tài khoản. ',
             'email' => 'Email : ' .$request->txtEmail,
-            'password' => 'Mã xác nhận : ' .$token,
+            'password' => route('user.activate', $token),
         ];
         \Mail::to($request->txtEmail)->send(new \App\Mail\welcomeNhanVien($mailData));
         DB::table('users')->insert($data);
-        return view('pages.confirm');
+        Session::put('xacnhan','Vui lòng kiểm tra mail để xác nhận tài khoản!');
+       return redirect('/signin');
     }
 
     
     ///Xác nhận tài khoản////
-    public function postConfirm(Request $request){
-        $token = $request->txtToken;
+    public function activeUser($token){
         DB::table('users')->where('token_remember',$token)->update(['email_verified_at'=>NOW(),'active'=>1]);
-        Session::put('message','Xác nhận thành công');
-        return redirect('/confirm');
+        Session::put('message','Xác nhận tài khoản thành công');
+        return redirect('/login');
     }
 
     ///Đăng nhập////
@@ -325,10 +333,8 @@ class PageController extends Controller
         $password = md5($request->txtPass);
 
         $result= DB::table('users')
-        ->where('email',$email)->where('password',$password)->where('active',1)
-        ->first();
+        ->where('email',$email)->where('password',$password)->where('active',1)->first();
 
-       
         if($result){
             Session::put('user',$result);
             return redirect::to('/');
@@ -340,12 +346,28 @@ class PageController extends Controller
 
     ////Cập nhật thông tin cá nhân////
     public function getInfo(){
-        return view('pages.info');
+        $user=Session::get('user');
+        if($user){
+            return view('pages.info');
+        }
+        else{
+            Session::put('dangnhap',"Vui lòng đăng nhập!");
+            return redirect('/login');
+        }
+        
     }
 
     ////Đổi mật khẩu/////
     public function getNewPass(){
-        return view('pages.changePass');
+        $user=Session::get('user');
+        if($user){
+            return view('pages.changePass');
+        }
+        else{
+            Session::put('dangnhap',"Vui lòng đăng nhập!");
+            return redirect('/login');
+        }
+       
     }
 
     public function postNewPass(Request $request){
@@ -474,23 +496,43 @@ class PageController extends Controller
     ////Danh sách đơn hàng/////
     public function getBills(){
         $user=Session::get('user');
-        $listBill=DB::table('bills')->where('idKh',$user->id)->get();
-        Session::put('listBill',$listBill);
-        return view('pages.list_Bill');
+        if($user){
+            $user=Session::get('user');
+            $listBill=DB::table('bills')->where('idKh',$user->id)->get();
+            Session::put('listBill',$listBill);
+            return view('pages.list_Bill');
+        }
+        else{
+            Session::put('dangnhap',"Vui lòng đăng nhập!");
+            return redirect('/login');
+        }
+       
     }
     ////Xem chi tiết đơn hàng///
     public function getDetailBill($id_bill){
-        $Detail = DB::table('detailbill')->where('idBill',$id_bill)->get();
-        $Bill=DB::table('bills')->where('idBill',$id_bill)->first();
-        Session::put('bill',$Bill);
-        Session::put('Detail',$Detail);
-
-        return view('pages.detail_bill');
+        $user=Session::get('user');
+        if($user){
+            $Detail = DB::table('detailbill')->where('idBill',$id_bill)->get();
+            $Bill=DB::table('bills')->where('idBill',$id_bill)->first();
+            Session::put('bill',$Bill);
+            Session::put('Detail',$Detail);
+            return view('pages.detail_bill');
+        }
+        else{
+            Session::put('dangnhap',"Vui lòng đăng nhập!");
+            return redirect('/login');
+        }
+        
     }
     /////Hủy đơn hàng///
     public function postBillDes(Request $request,$id_bill){
         DB::table('bills')->where('idBill',$id_bill)->update(['trangthai'=>4,'note'=>$request->txtnote,'update_date'=>NOW()]);
-
+        $bills=DB::table('detailbill')->where('idBill',$id_bill)->get();
+        foreach($bills as $bill){
+            $book=DB::table('books')->where('idBook',$bill->idBook)->first();
+            $qty=$bill->quantity+$book->quantity;
+            DB::table('books')->where('idBook',$bill->idBook)->update(['quantity'=>$qty]);
+        }
         return redirect('listBill');
 
     }
@@ -570,6 +612,7 @@ class PageController extends Controller
         $user=Session::get('user');
         $sale_code=Session::get('sz');
         $diem=Session::get('diem');
+        
         $data=array();
         $this->validate($request,[
                 'txtName'       =>'min:5|regex:/^[\p{L}\s-]+$/u',
@@ -588,8 +631,7 @@ class PageController extends Controller
             $data['email']=$request->txtEmail;
             $data['idCheck']=$request->rdoCheck;
             $check=DB::table('thanhtoan')->where('idCheck',$request->rdoCheck)->first();
-           
-                $data['trangthai']=0;
+            $data['trangthai']=0;
            
             
             $data['note']=$request->txtNote;
@@ -612,8 +654,7 @@ class PageController extends Controller
             if($user){
                 $data['idKH']=$user->id;
                 $kh=DB::table('users')->where('id',$user->id)->first();
-                DB::table('users')->where('id',$user->id)->update(['diemtichluy'=>'0','updated_at'=>NOW()]);
-                
+               
                 if($total>=200000&&$total<500000){
                     $qty=$kh->diemtichluy+500;
                     DB::table('users')->where('id',$user->id)->update(['diemtichluy'=>$qty,'updated_at'=>NOW()]);
@@ -679,7 +720,15 @@ class PageController extends Controller
     /////tìm kiếm/////
     public function getSearch(Request $request){
         $keyword=$request->keyword;
-        $result=DB::table('books')->select('*')->where('NameBook','LIKE', "%{$keyword}%")->where('status',1)->orderBy('create_date','DESC')->paginate(9);
+        $tl=$request->orderbyType;
+        if($tl!=0){
+            $result=DB::table('books')->select('*')->where('NameBook','LIKE', "%{$keyword}%")->where('idType',$tl)->where('status',1)->orderBy('create_date','DESC')->paginate(9);
+            $type=DB::table('type')->where('idType',$tl)->first();
+            Session::put('nameType',$type->nameType);
+        }
+        else{
+            $result=DB::table('books')->select('*')->where('NameBook','LIKE', "%{$keyword}%")->where('status',1)->orderBy('create_date','DESC')->paginate(9);
+        }
         Session::put('keyword',$keyword);
         Session::put('result',$result);
         return view('pages.search');
@@ -687,95 +736,46 @@ class PageController extends Controller
     ////END/////
 
     ////Comment////
-    public function postComment($idBook,Request $request){
-
-        $user=Session::get('user');
+    public function postComment($idBill,$idBook,Request $request){
         
-					
-        $book=DB::table('books')->where('idBook',$idBook)->first();
-        $comment=DB::table('danhgia')->where('idBook',$idBook)->get();
-        
-
-       $user_com=DB::table('danhgia')->where('idKH',$user->id)->where('idBook',$idBook)->first();
-       if($user_com){
-           Session::put('error','Bạn đã đánh giá sách này!');
-           return Redirect::back();
-       }
-       else{
-            $diem=0;
-            $sl=0;
-            if($comment->count()>1){
-                foreach($comment as $com){
-                    $sl=$sl+1;
-                    $diem=$diem+$com->diem;
-                }
-                $tb=$diem/$sl;
-                DB::table('books')->where('idBook',$idBook)->update(['diem'=>$tb]);
-            }else{
-                DB::table('books')->where('idBook',$idBook)->update(['diem'=>$request->diem]);
-            }
-
             $data=array();
             $data['tieude']=$request->tieude;
             $data['noidung']=$request->noidung;
             $data['diem']=$request->diem;
             $data['idBook']=$idBook;
-            $data['idKH']=$user->id;
-
+            $data['nameKH']=$request->nickname;
+            $data['idBill']=$idBill;
             
-            DB::table('danhgia')->insert($data);
+            if(DB::table('danhgia')->insert($data)){
+                $comment=DB::table('danhgia')->where('idBook',$idBook)->get();
+                $diem=0;
+                $sl=0;
+                if($comment->count()>1){
+                    foreach($comment as $com){
+                        
+                        $sl=$sl+1;
+                        $diem=$diem+$com->diem;
+                    }
+                    $tb=$diem/$sl;
+                   
+                    DB::table('books')->where('idBook',$idBook)->update(['diem'=>$tb]);
+                }else{
+                    DB::table('books')->where('idBook',$idBook)->update(['diem'=>$request->diem]);
+                }
+            }
+
+
             return Redirect::back();
 
        }
 
         
-    }
+    
 
-    public function save_likedislike(Request $request){
-       
-        $data=array();
-        $data['idCom']=$request->post;
-        if($request->type=='like'){
-            $data['like_com']=1;
-        }else{
-            $data['dislike_com']=1;
-        }
-        DB::table('like_dislikes')->insert($data);
-        return response()->json([
-            'bool'=>true
-        ]);
-        
-     }
-    /////END//////
+    /////
 
 
-    ////Trending////
-    /*public function getTrend(){
-        $book=DB::table('trending')->select('*')->paginate(9);
-        Session::put('books',$book);
-
-        return view('pages.trending');
-    }
-    */
-
-    ////END////
-
-    ////Giá////
-    /*public function getGia($type){
-        
-        if($type=="asc"){
-            $listBook=Session::get('books')->orderBy('unit_price','ASC')->get();
-            Session::put('sort','asc');
-        }
-        if($type=='desc'){
-            $listBook=Session::get('books')->orderBy('unit_price','DESC')->get();
-            Session::put('sort','asc');
-        }
-        Session::put('books',$listBook);
-        
-        return view('pages.category');
-    }*/
-    ////
+   
 }
 
 session_destroy();

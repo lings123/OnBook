@@ -12,6 +12,26 @@
 <!--[if !mso]><!-->
 <!--<![endif]-->
 <style type="text/css">
+		.lienket{       
+			background-color: white;
+			color: black;
+			border: 2px solid #73AD21;
+			border-radius:5px;
+			padding: 10px 20px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			font-family: "Lucida Sans Unicode";
+		}
+		.lienket:hover{
+			background-color: #73AD21;
+			color:white;
+		}
+		.lienket:active{
+			background-color: green;
+			border-color: green;
+		}
 		body {
 			margin: 0;
 			padding: 0;
@@ -203,23 +223,24 @@
 <!--[if (!mso)&(!IE)]><!-->
 <div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;">
 <!--<![endif]-->
-<div style="font-size:16px;text-align:center;font-family:Arial, Helvetica Neue, Helvetica, sans-serif">
-<div class="our-class">
-													{{$mailData['title']}} </div>
-                                                </div>
+
+	<div class="our-class" style="font-size:16px;text-align:center;font-family:Arial, Helvetica Neue, Helvetica, sans-serif">
+		{{$mailData['title']}} 
+	</div>
+
 <div class="our-class">
     <div class="our-class">
-        {{$mailData['content']}} </div>
+        {{$mailData['content']}} 
+	</div>
+</div>
 <div class="our-class">
     <div class="our-class">
 		{{$mailData['email']}}<br>
-		{{$mailData['password']}}<br>
+		<a class="lienket" href="{{$mailData['password']}}" >Nhấn vào để xác nhận</a><br>
         <small>Nếu có gì thắc mắc, xin liên hệ qua email này.
 		Xin chân thành cảm ơn.</small>
 	</div>
-<div class="our-class">
 
-</div>
 <!--[if (!mso)&(!IE)]><!-->
 </div>
 <!--<![endif]-->

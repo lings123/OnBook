@@ -26,28 +26,11 @@ class CommentController extends Controller
         }
        
     }
-    
-    public function getDelCom($id_com){
-        $idBook=DB::table('danhgia')->select('idBook')->where('idCom',$id_com)->first();
-        $idBook=get_object_vars($idBook);
-        
-        $comment=DB::table('danhgia')->where('idBook',$idBook)->get();
-        $diem=0;
-            $sl=0;
-            if($comment->count()>1){
-                foreach($comment as $com){
-                    $sl=$sl+1;
-                    $diem=$diem+$com->diem;
-                }
-                $tb=$diem/$sl;
-                DB::table('books')->where('idBook',$idBook)->update(['diem'=>$tb,'update_date'=>NOW()]);
-            }else{
-                DB::table('books')->where('idBook',$idBook)->update(['diem'=>0,'update_date'=>NOW()]);
-            }
-        DB::table('danhgia')->where('idCom',$id_com)->delete();
-        return redirect('admin/danh-gia/danh-sach');
+    public function postTTComment($id_com){
+        DB::table('danhgia')->where('idCom',$id_com)->update(['status'=>0,'update_date'=>NOW()]);
+        return redirect::back();
     }
+    
 
     
 }
-session_destroy();

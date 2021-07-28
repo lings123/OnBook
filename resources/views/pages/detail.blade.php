@@ -114,18 +114,7 @@
 						</div>
 					</div>
 				</div>
-				<form action="{{URL::to('/danh-gia/them/'.$book->idBook)}}" method="POST">
-					<?php 
-					$mess=Session::get('error') ;
-					Session::put('error',null);   
-				?> 
 				
-				@if($mess)
-				<div class="alert alert-danger">
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-					<strong>{{$mess}}</strong>
-				</div>
-				@endif
 				<div class="product__info__detailed">
 					<div class="pro_details_nav nav justify-content-start" role="tablist">
 						<a class="nav-item nav-link active " data-toggle="tab" href="#nav-details" role="tab">Details</a>
@@ -141,60 +130,6 @@
 						<!-- End Single Tab Content -->
 						<!-- Start Single Tab Content -->
 						<div class="pro__tab_label tab-pane fade" id="nav-review" role="tabpanel">
-							<?php if($user){
-								$data=array();
-													$data2=array();
-													$bills=DB::table('bills')->select('idBill')->where('idKH',$user->id)->where('trangthai',3)->get();
-													foreach($bills as $bill){
-														array_push($data,get_object_vars($bill));
-													}
-													
-													$details=DB::table('detailbill')->select('idBook')->whereIn('idBill',$data)->orderBy('create_date','DESC')->get();
-													foreach($details as $detail){
-														array_push($data2,get_object_vars($detail));
-													}
-													$RecentBook=DB::table('books')->whereIn('idBook',$data2)->get();
-							} ?>
-							@if($user)
-							@foreach($RecentBook as $recent)
-								@if($recent->idBook==$book->idBook)
-									<?php $kq=true; ?>
-								@endif
-							@endforeach
-							@if($kq==true)
-							<?php $com=DB::table('danhgia')->Where('idBook',$book->idBook)->where('idKH',$user->id)->first(); ?>
-							@if(!$com)
-							<div class="review-fieldset">
-								<h2>You're reviewing:</h2>
-								<h3>{{$book->NameBook}}</h3>
-								<div class="review_form_field">
-									<div class="input__box">
-										<span>Đánh giá điểm: </span>
-										<input id="nickname_field" type="number" max="10" name="diem" required>
-									</div>
-									<input type="hidden" name="_token" value="{{ csrf_token() }}">
-									<div class="input__box">
-										<span>Nickname</span>
-										<input id="nickname_field" type="text" name="nickname" value="{{$user->name}}" required>
-									</div>
-									<div class="input__box">
-										<span>Summary</span>
-										<input id="summery_field" type="text" name="tieude" required>
-									</div>
-									<div class="input__box">
-										<span>Review</span>
-										<textarea name="noidung" required></textarea>
-									</div>
-									<div class="review-form-actions">
-										<button>Submit Review</button>
-									</div>
-								</div>
-								</form>
-							</div>
-							@endif
-							@endif
-
-							@endif
 							
 							<br>
 							<div class="review__attribute">
@@ -223,8 +158,7 @@
 									</div>
 									<div class="review-content">
 										
-										<?php $nameUs=DB::table('users')->where('id',$com->idKH)->first(); ?>
-										<p>Review by {{$nameUs->name}}</p>
+										<p>Review by {{$com->nameKH}}</p>
 										<p>Posted on {{ \Carbon\Carbon::parse($com->create_date)->format('d/m/Y')}}</p>
 									</div>
 									
@@ -363,7 +297,7 @@
 							
 								<div class="product__info__main">
 							<div class="box-tocart d-flex">
-								<form action="{{URL::to('/gio-hang/them/'.$book->idBook)}}" method="POST">
+								<form action="{{URL::to('/gio-hang/them/'.$b->idBook)}}" method="POST">
 									
 									{{ csrf_field() }}
 									@if($b->quantity>0)

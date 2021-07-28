@@ -40,7 +40,7 @@ class AdminController extends Controller
             ->with('errors',"Vui lòng đăng nhập!");
         }
         else{
-            $range = \Carbon\Carbon::now()->subMonth(5);
+            $range = \Carbon\Carbon::now('Asia/Ho_Chi_Minh')->subMonths(12);
             $billData=DB::table('bills')->select(DB::raw('Month(create_date) as getMonth'), DB::raw('COUNT(*) as value'))
                     ->where('create_date', '>=', $range)
                     ->where('trangthai',3)

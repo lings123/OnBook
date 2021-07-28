@@ -86,7 +86,7 @@
                             <?php
                                 $book=DB::table('books')->where('idBook',$item->idBook)->first();
                             ?>
-                            <td> <img src="{{URL::to('public/uploaded/books/'.$book->hinh_dai_dien)}}" style="width: 150px;height: 200px;"></td>
+                            <td><a href="{{URL::to('/chi-tiet/'.$book->slug_name)}}"> <img src="{{URL::to('public/uploaded/books/'.$book->hinh_dai_dien)}}" style="width: 150px;height: 200px;"></a></td>
                             <td class="text-left product-title">
                                
                                 <p>
@@ -100,11 +100,12 @@
                                 {{$item->unit_price}}
                             </td>
                            <td> @if($bill->trangthai==3)
-                                    <?php $danhgia=DB::table('danhgia')->where('idBook',$item->idBook)->where('idKH',$user->id)->first(); ?>
+                                    <?php $danhgia=DB::table('danhgia')->where('idBook',$item->idBook)->where('idBill',$item->idBill)->first(); ?>
                                     @if($danhgia)
-                                        <span class="btn btn-default">BẠN ĐÁNH GIÁ SẢN PHẨM NÀY.</span>
+                                        <span class="btn btn-default">BẠN ĐÃ ĐÁNH GIÁ SẢN PHẨM NÀY.</span>
                                     @else
-                                        <a class="btn btn-primary" href="{{URL::to('chi-tiet/'.$book->slug_name)}}">ĐÁNH GIÁ.</a>
+                                    
+                                    <a data-toggle="modal" title="Quick View" class="quickview modal-view detail-link btn btn-danger" href="#review{{$item->idBook}}">ĐÁNH GIÁ.</a>
                                     @endif
                                 @endif
                             </td>
@@ -117,6 +118,7 @@
                 <br/><hr/>
                 <div class="col-lg-9 col-12 order-1 order-lg-2">
                     @if($bill->trangthai==0) 
+
                     <a data-toggle="modal" title="Quick View" class="quickview modal-view detail-link btn btn-danger" href="#bill-des">HỦY ĐƠN HÀNG</a>
                    
                     @endif
@@ -140,7 +142,59 @@
                         </div>
                     </div>
                 </div>
-                
+                <div id="quickview-wrapper">
+                    <?php $books=DB::table('books')->get(); ?>
+                    @foreach($books as $b)
+                    <div class="modal fade" id="review{{$b->idBook}}" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal__container" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header modal__header">
+                                    <h3>Đánh giá sản phẩm {{$b->NameBook}}</h3><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    
+                                    <form action="{{URL::to('/danh-gia/them/'.$bill->idBill.'/'.$b->idBook)}}" method="POST">
+                                        
+                                        <div class="review-fieldset">
+                                            <div class="review_form_field">
+                                              
+                                            
+                                                <div class="account__form">
+                                                    <div class="input__box">
+                                                        <label>Điểm: </label>
+                                                        <input id="nickname_field" type="number" max="10" name="diem" required>
+                                                    </div>
+                                                    <div class="input__box">
+                                                        <label>Tên khách hàng</label>
+                                                        <input id="nickname_field" type="text" name="nickname" value="{{$bill->nameKH}}" required>
+                                                    </div>
+                                                    <div class="input__box">
+                                                        <span>Tiêu đề</span>
+                                                    <input id="summery_field" type="text" name="tieude" required>
+                                                    </div>
+                                                    <div class="input__box">
+                                                        <span>Nội dung</span><br/>
+                                                    <textarea name="noidung" style="width: 1000px; height: 350px;" required></textarea>
+                                                    </div>
+                                                    {{ csrf_field() }}
+                                                    <div class="form__btn">
+                                                        <br>
+                                                        <button>Đánh giá</button>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </form>
+                                                
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
             
             <div class="col-lg-3 col-12 order-2 order-lg-1 md-mt-40 sm-mt-40">

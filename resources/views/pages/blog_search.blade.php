@@ -7,7 +7,7 @@
 	$keyword=Session::get('keyword');
 	$result=Session::get('result');
   ?>
-  <div class="ht__bradcaump__area bg-image--6" style="background-image: url(..public/uploaded/slider/_anh609639bb6c63f4.05873655.jpg) !important">
+  <div class="ht__bradcaump__area bg-image--6" style="background-image: url(../public/uploaded/slider/_anh609639bb6c63f4.05873655.jpg) !important">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-12">

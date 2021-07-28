@@ -1,4 +1,5 @@
 	<!-- Footer Area -->
+
 	<footer id="wn__footer" class="footer__area bg__cat--8 brown--color">
 		<div class="footer-static-top">
 			<div class="container">

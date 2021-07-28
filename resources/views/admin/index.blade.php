@@ -75,6 +75,7 @@ $tong=Session::get('tong');
        listOfMonth.push(element.getMonth);
        listOfValue.push(element.value);
    });
+   console.log(listOfMonth);
    var order1 = $('#container').data('order1');
    order1.forEach(function(element){
        
@@ -103,7 +104,7 @@ $tong=Session::get('tong');
        },
 
        subtitle: {
-           text: 'Tổng đơn hàng trong 5 tháng'
+           text: 'Tổng đơn hàng trong 12 tháng'
        },
 
        xAxis: {
@@ -161,7 +162,7 @@ $tong=Session::get('tong');
             text: 'Tổng tiền các đơn hàng giao thành công theo tháng'
         },
         subtitle: {
-            text: 'Tổng tiền các đơn hàng giao thành công trong 5 tháng'
+            text: 'Tổng tiền các đơn hàng giao thành công trong 12 tháng'
         },
         xAxis: {
             categories: listOfMonth,

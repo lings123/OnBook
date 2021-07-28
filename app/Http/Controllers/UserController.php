@@ -30,7 +30,7 @@ class UserController extends Controller
     }
 
     public function getDelUser($id_kh){
-        DB::table('danhgia')->where('idKH',$id_kh)->delete();
+       
         DB::table('users')->where('id',$id_kh)->delete();
         
         return redirect('admin/khach-hang/danh-sach');

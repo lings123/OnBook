@@ -157,9 +157,118 @@
 <div class="brown--color box-search-content search_active block-bg close__top">
     <form id="search_mini_form" class="minisearch" action="{{URL::to('/tim-kiem')}}" method="GET">
         <div class="field__search">
-            <input type="text" name="keyword" placeholder="Tìm kiếm nhập sản phẩm cần tìm...">
+            <input type="text" name="keyword" style="font-size: 13pt;" placeholder="Tìm kiếm nhập sản phẩm cần tìm...">
+            <?php  $types=Session::get('type'); ?>
+            <style>
+                .btnTimkiem:hover{
+                    background-color: black;
+                    color: white;
+                }
+                .orderbyType {
+                -moz-border-bottom-colors: none;
+                -moz-border-left-colors: none;
+                -moz-border-right-colors: none;
+                -moz-border-top-colors: none;
+                background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.06)) repeat scroll 0 0 #F2F2F2;
+                display: inline-block;
+                s
+                overflow: hidden;
+                position: relative;
+                width: 150px;
+                height: 40px;
+                font-weight: 300;
+                color: #FFFFFF;
+                font-size: 13pt;
+                border-radius: 5px;
+                 }
+                .orderbyType:before, .orderbyType:after {
+                -moz-border-bottom-colors: none;
+                -moz-border-left-colors: none;
+                -moz-border-right-colors: none;
+                -moz-border-top-colors: none;
+                border-color: #888888 rgba(0, 0, 0, 0);
+                border-image: none;
+                border-style: dashed;
+                border-width: 4px;
+                content: "";
+                height: 0;
+                pointer-events: none;
+                position: absolute;
+                right: 10px;
+                top: 9px;
+                width: 0;
+                z-index: 2;
+                }
+                .orderbyType:before {
+                    border-bottom-style: solid;
+                    border-top: medium none;
+                }
+                .orderbyType:after {
+                    border-bottom: medium none;
+                    border-top-style: solid;
+                    margin-top: 7px;
+                }
+                .orderbyType-select {
+                    background: none repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+                    border: 0 none;
+                    border-radius: 0;
+                    color: #62717A;
+                    font-size: 12px;
+                    height: 28px;
+                    line-height: 14px;
+                    margin: 0;
+                    padding: 6px 8px 6px 10px;
+                    position: relative;
+                    text-shadow: 0 1px #FFFFFF;
+                    width: 130%;
+                }
+                .orderbyType-select:focus {
+                    color: #394349;
+                    outline: 2px solid #49AFF2;
+                    outline-offset: -2px;
+                    width: 100%;
+                    z-index: 3;
+                }
+                .orderbyType-select > option {
+                    background: none repeat scroll 0 0 #F2F2F2;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    margin: 3px;
+                    padding: 6px 8px;
+                    text-shadow: none;
+                }
+                .orderbyType-dark {
+                    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4)) repeat scroll 0 0 #444444;
+                    border-color: #111111 #0A0A0A #000000;
+                    box-shadow: 0 1px rgba(255, 255, 255, 0.1) inset, 0 1px 1px rgba(0, 0, 0, 0.2);
+                }
+                .orderbyType-dark:before {
+                    border-bottom-color: #AAAAAA;
+                }
+                .orderbyType-dark:after {
+                    border-top-color: #AAAAAA;
+                }
+                .orderbyType-dark .orderbyType-select {
+                    background: none repeat scroll 0 0 #444444;
+                    color: #AAAAAA;
+                    text-shadow: 0 1px #000000;
+                }
+                .orderbyType-dark .orderbyType-select:focus {
+                    color: #CCCCCC;
+                }
+                .orderbyType-dark .orderbyType-select > option {
+                    background: none repeat scroll 0 0 #444444;
+                    text-shadow: 0 1px rgba(0, 0, 0, 0.4);
+                }
+            </style>
             <div class="action">
-                <a href="#"><i class="zmdi zmdi-search"></i></a>
+                <select class="shot__byselect orderbyType orderbyType-dark" style="" name="orderbyType">
+                    <option value="0" >Chọn thể loại</option>
+                    @foreach ($types as $type)
+                    <option value="{{$type->idType}}" >{{$type->nameType}}</option>
+                    @endforeach
+                </select>
+                <button style="padding: 5px 20px 5px 20px" name="btnTimkiem" style="font-size: 13pt;" class="btn btn-default btnTimkiem">Tìm kiếm</button>
             </div>
         </div>
     </form>
@@ -168,3 +277,5 @@
     </div>
 </div>
 <!-- End Search Popup -->
+<!--QuickView-->
+

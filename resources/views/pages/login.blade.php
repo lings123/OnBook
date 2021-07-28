@@ -31,11 +31,27 @@
 						<?php 
 						$mess=Session::get('error') ;
 						Session::put('error',null);   
+						$mess2=Session::get('message') ;
+						Session::put('message',null);  
+						$mess3=Session::get('dangnhap') ;
+						Session::put('dangnhap',null);  
 						?> 
 						@if($mess)
 							<div class="alert alert-danger">
 								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 								<strong>{{$mess}}</strong>
+							</div>
+						@endif
+						@if($mess3)
+							<div class="alert alert-warning">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+								<strong>{{$mess3}}</strong>
+							</div>
+						@endif
+						@if($mess2)
+							<div class="alert alert-success">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+								<strong>{{$mess2}}</strong>
 							</div>
 						@endif
 						<div class="account__form">
@@ -62,6 +78,8 @@
 					<h3 class="account__title">Register</h3>
 					
 					<form action="{{URL::to('/signin')}}" method="POST">
+						<?php $xacnhan=Session::get('xacnhan') ;
+						Session::put('xacnhan',null);   ?>
 						@if($errors)
 							@if($errors->count()>0)
 							<div class="alert alert-danger">
@@ -72,6 +90,12 @@
 								@endforeach
 							</div>
 							@endif
+						@endif
+						@if($xacnhan)
+							<div class="alert alert-warning">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+								<strong>{{$xacnhan}}</strong>
+							</div>
 						@endif
 						<div class="account__form">
 							<div class="input__box">

@@ -3,8 +3,9 @@
  <!-- Start Bradcaump area -->
  <?php  $result=Session::get('result');
 		$keyword=Session::get('keyword');
+		$nameType=Session::get('nameType');
  ?>
- <div class="ht__bradcaump__area bg-image--6" style="background-image: url(uploaded/slider/_anh609639bb6c63f4.05873655.jpg) !important">
+ <div class="ht__bradcaump__area bg-image--6" style="background-image: url(public/uploaded/slider/_anh609639bb6c63f4.05873655.jpg) !important">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-12">
@@ -14,8 +15,13 @@
 						Tìm kiếm<br>
 						Keyword : {{$keyword}}
 						@endif
+						<br/>
+						@if($nameType)
+						theo thể loại {{$nameType}}
+						@endif
 						</h2>
 						{{Session::put('keyword',null)}}
+						{{Session::put('nameType',null)}}
 					<nav class="bradcaump-content">
 					  <a class="breadcrumb_item" href="{{URL::to('/')}}">Home</a>
 					  <span class="brd-separetor">/</span>
@@ -62,7 +68,7 @@
 							<div class="col-lg-4 col-md-4 col-sm-6 col-12">
 								<div class="product product__style--3">
 									<div class="product__thumb">
-										<a class="first__img" href="{{URL::to('/chi-tiet/'.$book->slug_name)}}"><img src="{{URL('uploaded/books/'.$book->hinh_dai_dien)}}" width="270" height="340"  alt="product image"></a>
+										<a class="first__img" href="{{URL::to('/chi-tiet/'.$book->slug_name)}}"><img src="{{URL('public/uploaded/books/'.$book->hinh_dai_dien)}}" width="270" height="340"  alt="product image"></a>
 										<div class="hot__box">
 											@if($book->new!=0)<span class="hot-label">NEW</span>@endif
 										</div>
@@ -92,21 +98,22 @@
 							<!-- Start Single Product -->
 							@endforeach
 							<!-- End Single Product -->
-							<ul class="wn__pagination">
-								<li >{{$result->links('vendor.pagination.semantic-ui')}}</li>
-								
-							</ul>
+							
+							
 							
 						
 						</div>
 						
 					</div>
 				</div>
-				
+				<ul class="wn__pagination">
+					<li >{{$result->appends(['keyword'=>$keyword])->links('vendor.pagination.semantic-ui')}}</li>
+				</ul>
 				
 			</div>
 			
 		</div>
+		
 	</div>
 </div>
 <!-- QUICKVIEW PRODUCT -->
@@ -165,8 +172,10 @@
 										<form action="{{URL::to('/gio-hang/them/'.$b->idBook)}}" method="POST">
 											<span>Số lượng</span>
 											<input id="qty" class="input-text qty" name="qty" min="1" value="1" title="Qty" type="number">
+											
 											{{ csrf_field() }}
-											@if($book->quantity>0)
+											
+											@if($b->quantity>0)
                                         <div class="addtocart__actions">
                                             <button class="tocart btn" type="submit" title="Add to Cart">Add to Cart</button>
                                         </div>

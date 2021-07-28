@@ -16,7 +16,15 @@ session_start();
 class WishlistController extends Controller
 {
     public function getWishlist(){
-        return view('pages.wishlist');
+        $user=Session::get('user');
+        if($user){
+            return view('pages.wishlist');
+        }
+        else{
+            Session::put('dangnhap',"Vui lòng đăng nhập!");
+            return redirect('/login');
+        }
+       
     }
     public function AddWishlist($idBook){
         $idUser=Session::get('user');

@@ -11,6 +11,7 @@
 		$mess_new=Session::get('mess_new');
 		$mess_sale=Session::get('mess_sale');
 		$mess_all=Session::get('mess_all');
+		
 		$sort= Session::get('sort');
 		Session::put('sort',"md");
  ?>
@@ -32,24 +33,19 @@
 						{{$pub_name}}
 						{{Session::put('PubName',null)}}
 						@endif
-						@if($all)
+						@if($mess_all)
 							{{$mess_all}}
-							
 							 {{Session::put('mess_all',null)}}
-							
 						@endif
-						@if($new)
+						@if($mess_new)
 							{{$mess_new}}
-							
 							{{Session::put('mess_new',null)}}
-							
 						@endif
-						@if($sale)
+						@if($mess_sale)
 							{{$mess_sale}}
-						
 							{{Session::put('mess_sale',null)}}
 						@endif
-						</h2>
+					</h2>
 					<nav class="bradcaump-content">
 					  <a class="breadcrumb_item" href="{{URL::to('/')}}">Home</a>
 					  <span class="brd-separetor">/</span>
@@ -147,7 +143,7 @@
 						
 						</div>
 						<ul class="wn__pagination">
-							<li >{{$listBook->links('vendor.pagination.semantic-ui')}}</li>
+							<li >{{$listBook->appends(['orderbyBook'=>$sort])->links('vendor.pagination.semantic-ui')}}</li>
 						</ul>
 						
 					</div>
@@ -257,15 +253,13 @@
 
 @section('script')
 <script type="text/javascript">
-$(function(){
-	
+
 	$('.orderbyBook').on('change', function() {
 		$("#form_sort").submit();
 		
 	});
+
 	
-});
-		
 
 </script>
 @endsection

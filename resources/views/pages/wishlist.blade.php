@@ -43,11 +43,12 @@
                                             <td class="product-thumbnail"><a href="{{URL::to('/chi-tiet/'.$book->options->slug_name)}}"><img src="{{URL::to('public/uploaded/books/'.$book->options->image)}}" style="width: 184px;height: 276px;" alt="product img"></a></td>
                                             <td class="product-name"><a href="{{URL::to('/chi-tiet/'.$book->options->slug_name)}}">{{$book->name}}</a></td>
                                             <td class="product-price"><span class="amount">{{$book->price}}</span></td>
+                                            <?php $sp=DB::table('books')->where('idBook',$book->id)->first(); ?>
                                             <td class="product-add-to-cart"><form></form>
                                                 <form action="{{URL::to('/gio-hang/them/'.$book->id)}}" method="POST">
                                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                    @if($book->quantity>0)
-                                                        <button >Add to Cart</button>
+                                                    @if($sp->quantity>0)
+                                                        <button class="btn btn-default">Add to Cart</button>
                                                     @else
                                                         <h3 style="color: darkred">Hết hàng</h3>
                                                     @endif

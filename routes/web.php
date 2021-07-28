@@ -43,7 +43,8 @@ Route::get('/signin','App\Http\Controllers\PageController@getLogin');
 Route::post('/signin','App\Http\Controllers\PageController@postSignin');
 
 ////xác nhận email////
-Route::post('/confirm','App\Http\Controllers\PageController@postConfirm');
+
+Route::get('/xac-nhan/{token}','App\Http\Controllers\PageController@activeUser')->name('user.activate');
 ///END Đăng ký////
 
 /// Đăng nhập////
@@ -107,10 +108,10 @@ Route::post('/dat-hang','App\Http\Controllers\PageController@postBill');
 
 ////Comment////
 Route::group(['prefix'=>'/danh-gia'],function(){
-	Route::post('/them/{idBook}','App\Http\Controllers\PageController@postComment');
+	Route::post('/them/{idBill}/{idBook}','App\Http\Controllers\PageController@postComment');
 	
 });
-Route::post('danh-gia/save-likedislike','App\Http\Controllers\PageController@save_likedislike');
+
 /////eND/////
 
 
@@ -118,8 +119,7 @@ Route::post('danh-gia/save-likedislike','App\Http\Controllers\PageController@sav
 Route::get('/tim-kiem','App\Http\Controllers\PageController@getSearch');
 ///END///
 
-///Trending///
-Route::get('/trend','App\Http\Controllers\PageController@getTrend');
+
 
 ////END////
 
@@ -278,7 +278,7 @@ Route::group(['prefix'=>'admin'],function(){
 
 		Route::get('danh-sach','App\Http\Controllers\CommentController@getListComment');
 
-		Route::get('xoa/{id_com}','App\Http\Controllers\CommentController@getDelCom');
+		Route::post('cap-nhat/{id_com}','App\Http\Controllers\CommentController@postTTComment');
 
 
 	});
